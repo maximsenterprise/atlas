@@ -1,8 +1,13 @@
 
-#include "test.hpp"
+#include "atlas/core/exec_error.hpp"
+#include "atlas/window.hpp"
 #include <iostream>
+#include <string>
+
+using namespace atlas;
 
 int main() {
-    create_window();
+    Window window(800, 600, "Atlas Engine", true);  
+    window.create();
     return 0;
 }

@@ -9,7 +9,7 @@ LIB = ./lib
 
 LIB_FLAGS = -std=c++20 -I ./include -I $(OPENGL_INCLUDE) -I $(GLFW_INCLUDE) -c -L$(GLWF) -L$(OPENGL) -framework Cocoa -framework CoreFoundation -framework IOKit -framework CoreGraphics
 LIB_LIBS = -l$(GLFW_LIB) -l$(OPENGL_LIB)
-LIB_LINK = -dynamiclib -L$(GLFW) -L$(OPENGL) -framework Cocoa -framework CoreFoundation -framework IOKit -framework CoreGraphics 
+LIB_LINK = -dynamiclib -L$(GLFW) -L$(OPENGL) -framework Cocoa -framework CoreFoundation -framework IOKit -framework CoreGraphics -framework OpenGL
 
 TEST_FLAGS = -std=c++20 -I ./include -L./lib
 TEST_LIBS = -latlas
