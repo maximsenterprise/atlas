@@ -11,7 +11,7 @@ LIB_FLAGS = -std=c++20 -I ./include -I $(OPENGL_INCLUDE) -I $(GLFW_INCLUDE) -c -
 LIB_LIBS = -l$(GLFW_LIB) -l$(OPENGL_LIB)
 LIB_LINK = -dynamiclib -L$(GLFW) -L$(OPENGL) -framework Cocoa -framework CoreFoundation -framework IOKit -framework CoreGraphics -framework OpenGL
 
-TEST_FLAGS = -std=c++20 -I ./include -L./lib
+TEST_FLAGS = -std=c++20 -I ./include -g -L./lib
 TEST_LIBS = -latlas
 TEST = ./bin/atlas_test
 

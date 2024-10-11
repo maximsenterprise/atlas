@@ -12,7 +12,10 @@
 
 #include "atlas/opengl/glew.h"
 #include "atlas/opengl/glfw3.h"
+#include "atlas/utilities/utils.hpp"
+#include <atomic>
 #include <string>
+#include <thread>
 
 namespace atlas {
 
@@ -23,6 +26,8 @@ public:
     int width;
     int height;
     bool resizable;
+    std::atomic<bool> should_close;
+    FunctionQueue function_queue;
 
     Window(int width, int height, std::string title, bool resizable = false) : title(title), width(width), height(height), resizable(resizable) {};
     
@@ -31,6 +36,8 @@ public:
     void create_console();
 private:
     GLFWwindow* window;
+    std::thread* console_thread;
+    bool start_console = false;
 };
 
 }
