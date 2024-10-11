@@ -1,0 +1,7 @@
+.git
+obj
+bin
+.clang-format
+compile_commands.json
+lib
+.cache
