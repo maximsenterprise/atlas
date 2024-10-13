@@ -12,6 +12,7 @@
 
 #include "atlas/opengl/glew.h"
 #include "atlas/opengl/glfw3.h"
+#include "atlas/scene.hpp"
 #include "atlas/utilities/utils.hpp"
 #include <atomic>
 #include <string>
@@ -27,17 +28,20 @@ public:
     int height;
     bool resizable;
     std::atomic<bool> should_close;
-    FunctionQueue function_queue;
+    FunctionQueue function_queue = FunctionQueue();
+    FunctionQueue repating_queue = FunctionQueue();
 
     Window(int width, int height, std::string title, bool resizable = false) : title(title), width(width), height(height), resizable(resizable) {};
     
     void create();
     void destroy();
     void create_console();
+    void render_scene(Scene* scene);
 private:
     GLFWwindow* window;
     std::thread* console_thread;
     bool start_console = false;
+    Scene* current_scene = nullptr;
 };
 
 }

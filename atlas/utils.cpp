@@ -8,6 +8,7 @@
 */
 
 #include "atlas/utilities/utils.hpp"
+#include <iostream>
 
 namespace atlas {
 
@@ -20,6 +21,18 @@ void FunctionQueue::execute_all() {
         general_queue.front()();
         general_queue.pop();
     }
+}
+
+void FunctionQueue::clear() {
+    while (!general_queue.empty()) {
+        general_queue.pop();
+    }
+}
+
+void FunctionQueue::execute() {
+    if (!general_queue.empty()) {
+        general_queue.front()();
+    } 
 }
 
 std::string trim(const std::string& str) {

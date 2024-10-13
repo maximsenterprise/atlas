@@ -8,11 +8,13 @@
 */
 
 #include "atlas/window.hpp"
+#include "atlas/core/console.hpp"
 #include "atlas/core/exec_error.hpp"
 #include "atlas/opengl/glew.h"
 #include "atlas/opengl/glfw3.h"
-#include "atlas/core/console.hpp"
+#include "atlas/scene.hpp"
 #include "atlas/utilities/utils.hpp"
+#include <iostream>
 #include <string>
 #include <thread>
 #include <vector>
@@ -23,8 +25,15 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
-void atlas::Window::create_console() {
-    start_console = true;
+void atlas::Window::create_console() { start_console = true; }
+
+void atlas::Window::render_scene(Scene *scene) {
+    this->repating_queue.clear();
+    this->current_scene = scene;
+    current_scene->setup_queue.push([this] { this->current_scene->setup(); });
+
+    this->function_queue.push([this] { this->current_scene->render(); });
+    this->repating_queue.push([this] { this->current_scene->update(); });
 }
 
 void atlas::Window::create() {
@@ -35,10 +44,19 @@ void atlas::Window::create() {
         return;
     }
 
+    if (this->current_scene == nullptr) {
+        ExecutionError error("No scene to render", true);
+        error.express();
+        return;
+    }
+
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_RESIZABLE, this->resizable ? GLFW_TRUE : GLFW_FALSE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 
     window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
     if (!window) {
@@ -49,6 +67,7 @@ void atlas::Window::create() {
     }
 
     glfwMakeContextCurrent(window);
+
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     GLenum err = glewInit();
@@ -58,29 +77,32 @@ void atlas::Window::create() {
         return;
     }
 
+    current_scene->executeSetupQueue();
+
     glClearColor(0.2f, 0.3f, 0.3f, 0.1f);
-    
-    ComponentTree::components.push_back(Component("WindowComponent", title)); 
+
+    ComponentTree::components.push_back(Component("WindowComponent", title));
 
     while (!glfwWindowShouldClose(window)) {
-        glClear(GL_COLOR_BUFFER_BIT);
-        
-        glfwSwapBuffers(window); 
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        this->function_queue.execute_all(); 
+        this->function_queue.execute_all();
+        this->repating_queue.execute();
 
         if (should_close) {
             glfwSetWindowShouldClose(window, GLFW_TRUE);
             destroy();
         }
+        glfwSwapBuffers(window);
+
         glfwPollEvents();
 
         if (start_console) {
-            std::thread console_thread(console, this); 
+            std::thread console_thread(console, this);
             this->console_thread = &console_thread;
             console_thread.detach();
             start_console = false;
-        } 
+        }
     }
 }
 

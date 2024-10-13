@@ -21,6 +21,10 @@ public:
     std::queue<std::function<void()>> general_queue = std::queue<std::function<void()>>();
     void push(std::function<void()> func);
     void execute_all();
+    void clear();
+    void execute();
+
+    
 };
 
 class Component {
