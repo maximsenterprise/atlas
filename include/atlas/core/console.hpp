@@ -7,8 +7,8 @@
  Copyright (c) 2024 Maxims Enterprise
 */
 
-#ifndef CONSOLE_HPP
-#define CONSOLE_HPP
+#ifndef ATLAS_CONSOLE_HPP
+#define ATLAS_CONSOLE_HPP
 
 #include "atlas/window.hpp"
 namespace atlas {
@@ -17,4 +17,4 @@ void console(Window* window);
 
 }
 
-#endif // CONSOLE_HPP
+#endif // ATLAS_CONSOLE_HPP

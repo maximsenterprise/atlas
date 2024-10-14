@@ -7,8 +7,8 @@
  Copyright (c) 2024 Maxims Enterprise
 */
 
-#ifndef STYLE_HPP
-#define STYLE_HPP
+#ifndef ATLAS_STYLE_HPP
+#define ATLAS_STYLE_HPP
 
 #include <string>
 
@@ -17,4 +17,4 @@ static const std::string RED = "\033[31m";
 static const std::string ITALIC = "\033[3m";
 static const std::string BOLD = "\033[1m";
 
-#endif // STYLE_HPP
+#endif // ATLAS_STYLE_HPP

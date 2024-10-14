@@ -8,6 +8,7 @@
 */
 
 #include "atlas/window.hpp"
+#include "atlas/component.hpp"
 #include "atlas/core/console.hpp"
 #include "atlas/core/exec_error.hpp"
 #include "atlas/opengl/glew.h"
@@ -19,7 +20,7 @@
 #include <thread>
 #include <vector>
 
-std::vector<atlas::Component> atlas::ComponentTree::components = {};
+std::vector<atlas::ComponentRepresentation> atlas::ComponentTree::components = {};
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -79,9 +80,7 @@ void atlas::Window::create() {
 
     current_scene->executeSetupQueue();
 
-    glClearColor(0.2f, 0.3f, 0.3f, 0.1f);
-
-    ComponentTree::components.push_back(Component("WindowComponent", title));
+    glClearColor(0.2f, 0.3f, 0.3f, 0.1f); 
 
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

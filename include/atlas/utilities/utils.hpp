@@ -7,9 +7,11 @@
  Copyright (c) 2024 Maxims Enterprise
 */
 
-#ifndef UTILS_HPP
-#define UTILS_HPP
+#ifndef ATLAS_UTILS_HPP
+#define ATLAS_UTILS_HPP
 
+#include "atlas/component.hpp"
+#include "atlas/unit.hpp"
 #include <functional>
 #include <queue>
 #include <string>
@@ -27,21 +29,13 @@ public:
     
 };
 
-class Component {
-public:
-    std::string name;
-    std::string type;
-
-    Component(std::string name, std::string type) : name(name), type(type) {};
-};
-
 class ComponentTree {
 public:
-    static std::vector<Component> components;
+    static std::vector<ComponentRepresentation> components;
 };
 
 std::string trim(const std::string& str);
 
 };
 
-#endif // UTILS_HPP
+#endif // ATLAS_UTILS_HPP

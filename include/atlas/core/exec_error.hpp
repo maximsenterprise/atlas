@@ -7,8 +7,8 @@
  Copyright (c) 2024 Maxims Enterprise
 */
 
-#ifndef EXEC_ERROR_HPP
-#define EXEC_ERROR_HPP
+#ifndef ATLAS_EXEC_ERROR_HPP
+#define ATLAS_EXEC_ERROR_HPP
 
 #include <string>
 
@@ -29,4 +29,4 @@ public:
 
 }
 
-#endif // EXEC_ERROR_HPP
+#endif // ATLAS_EXEC_ERROR_HPP

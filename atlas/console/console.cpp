@@ -8,6 +8,7 @@
 */
 
 #include "atlas/core/console.hpp"
+#include "atlas/component.hpp"
 #include "atlas/core/exec_error.hpp"
 #include "atlas/utilities/utils.hpp"
 
@@ -26,13 +27,13 @@ void atlas::console(Window* window) {
         } else if (command == "clear" || command == "cls") {
             system("clear");  
         } else if (command == "tree") {
-            for (Component component : ComponentTree::components) {
+            for (ComponentRepresentation component : ComponentTree::components) {
                 std::cout << component.type << " <- " << component.name << std::endl;
             }
         } else if (command.starts_with("comp")) {
             std::string name = command.substr(5, command.length());
             std::cout << "Components for " << name << ":" << std::endl;
-            for (Component component : ComponentTree::components) {
+            for (ComponentRepresentation component : ComponentTree::components) {
                 if (component.name == trim(name)) {
                     std::cout << component.type << " <- " << component.name << std::endl;
                 }

@@ -11,6 +11,7 @@
 #define SCENE_HPP
 
 #include "atlas/utilities/utils.hpp"
+#include "atlas/component.hpp"
 #include <vector>
 namespace atlas {
 
@@ -21,7 +22,7 @@ class Scene {
     virtual void setup() = 0;
     virtual void destroy() {};
     void addSetupFunction(std::function<void()> func);
-    void executeSetupQueue();
+    void executeSetupQueue(); 
     Scene();
 
     FunctionQueue setup_queue = {};

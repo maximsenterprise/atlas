@@ -7,30 +7,34 @@
  Copyright (c) 2024 Maxims Enterprise
 */
 
-#ifndef SHAPE_HPP
-#define SHAPE_HPP
+#ifndef ATLAS_SHAPE_HPP
+#define ATLAS_SHAPE_HPP
 
 #include "atlas/opengl/glew.h"
 #include "atlas/scene.hpp"
+#include "atlas/unit.hpp"
+#include "atlas/utilities/utils.hpp"
+#include "atlas/component.hpp"
+#include <string>
 
 namespace atlas
 {
 
-class Triangle
+class Triangle : public Component
 {
 public:
-    Triangle(Scene* scene);
+    Triangle(Scene* scene, Size size, Position position, std::string name = "Triangle");
     void render();
     void setup();
+    GLuint program;
 
 private:
-    GLuint program;
     GLuint VBO = 0;
     GLuint VAO = 0;
 
-    static const float vertices[];
+    float vertices[];
 };
 
 }
 
-#endif // SHAPE_HPP
+#endif // ATLAS_SHAPE_HPP

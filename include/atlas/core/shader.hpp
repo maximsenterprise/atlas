@@ -7,8 +7,8 @@
  Copyright (c) 2024 Maxims Enterprise
 */
 
-#ifndef SHADER_HPP
-#define SHADER_HPP
+#ifndef ATLAS_SHADER_HPP
+#define ATLAS_SHADER_HPP
 
 #include <atlas/opengl/glew.h>
 
@@ -19,4 +19,4 @@ namespace atlas
     GLuint linkShaderProgram(GLuint vertexShader, GLuint fragmentShader);
 }
 
-#endif // SHADER_HPP
+#endif // ATLAS_SHADER_HPP

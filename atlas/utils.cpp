@@ -8,6 +8,8 @@
 */
 
 #include "atlas/utilities/utils.hpp"
+#include "atlas/opengl/glm/ext/vector_float3.hpp"
+#include "atlas/unit.hpp"
 #include <iostream>
 
 namespace atlas {
@@ -42,6 +44,20 @@ std::string trim(const std::string& str) {
     }
     size_t last = str.find_last_not_of(' ');
     return str.substr(first, (last - first + 1));
+}
+
+glm::vec3 Position::get() {
+    return glm::vec3(x, y, z);
+}
+
+glm::vec3 Size::get() {
+    return glm::vec3(width, height, depth);
+}
+
+Component::Component(std::string name, std::string type, Position position, Size size) : name(name), type(type), position(position), size(size) {
+    ComponentRepresentation representation = ComponentRepresentation(name, type, position, size);
+    ComponentTree::components.push_back(ComponentRepresentation(name, type, position, size));
+
 }
 
 }

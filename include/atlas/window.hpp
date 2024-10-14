@@ -7,12 +7,13 @@
  Copyright (c) 2024 Maxims Enterprise
 */
 
-#ifndef WINDOW_HPP
-#define WINDOW_HPP
+#ifndef ATLAS_WINDOW_HPP
+#define ATLAS_WINDOW_HPP
 
 #include "atlas/opengl/glew.h"
 #include "atlas/opengl/glfw3.h"
 #include "atlas/scene.hpp"
+#include "atlas/component.hpp"
 #include "atlas/utilities/utils.hpp"
 #include <atomic>
 #include <string>
@@ -21,7 +22,7 @@
 namespace atlas {
 
 // Represents a window in the atlas context
-class Window {
+class Window : public Component {
 public:
     std::string title;
     int width;
@@ -31,7 +32,7 @@ public:
     FunctionQueue function_queue = FunctionQueue();
     FunctionQueue repating_queue = FunctionQueue();
 
-    Window(int width, int height, std::string title, bool resizable = false) : title(title), width(width), height(height), resizable(resizable) {};
+    Window(int width, int height, std::string title, bool resizable = false) : title(title), width(width), height(height), resizable(resizable), Component("Window", "WindowComponent", Position(0, 0, 0), Size(width, height, 0)) {};
     
     void create();
     void destroy();
