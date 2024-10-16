@@ -9,35 +9,57 @@
 
 #include "atlas/shape.hpp"
 #include "atlas/component.hpp"
+#include "atlas/core/console.hpp"
 #include "atlas/core/shader.hpp"
 #include "atlas/opengl/glew.h"
+#include "atlas/opengl/glm/gtc/matrix_transform.hpp"
+#include "atlas/opengl/glm/gtc/type_ptr.hpp"
 #include "atlas/scene.hpp"
 #include "atlas/unit.hpp"
+#include "atlas/utilities/utils.hpp"
 #include <iostream>
 
 namespace atlas {
 
 void Triangle::render() {
-
-    glUseProgram(program);
+    glUseProgram(program); 
+    if (model != glm::mat4(1.0f)) { 
+        glUniformMatrix4fv(glGetUniformLocation(program, "MVP"), 1, GL_FALSE, &model[0][0]);
+    }
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 3);
     glBindVertexArray(0);
     glUseProgram(0);
 }
 
+void Triangle::set_model(MVPPackage package) { 
+    this->model = package.default_mvp;
+    this->mvp = package;
+}
+
+Position Triangle::get_position() {
+    return position;
+}
+
+void Triangle::update_position(Position position) {
+    Log::add_entry("Position updated", "Atlas:" + name);
+    this->position = position;
+    glm::mat4 new_mvp = this->mvp.compile();
+    new_mvp = glm::translate(new_mvp, position.get());
+    this->model = new_mvp;
+}
+
 Triangle::Triangle(Scene *scene, Size size, Position position, std::string name)
     : Component(name, "TriangleComponent", position, size) {
-
     program = compileVertexShader("shaders/triangle/triangle.vert");
     GLuint fragmentShader =
         compileFragmentShader("shaders/triangle/triangle.frag");
     program = linkShaderProgram(program, fragmentShader);
-    scene->addSetupFunction([this]() { glUseProgram(program); });
-
+ 
     float vertices[] = {-size.width, -size.height, 0.0f,
                         size.width,  -size.height, 0.0f,
                         0.0f,        size.height,  0.0f};
+    
 
     if (VAO == 0) {
         glGenVertexArrays(1, &VAO);
@@ -49,10 +71,15 @@ Triangle::Triangle(Scene *scene, Size size, Position position, std::string name)
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
                               (void *)0);
         glEnableVertexAttribArray(0);
-    }
+    } 
 
-    if (GLenum error = glGetError() != GL_NO_ERROR) {
+    GLenum error;
+    if ((error = glGetError()) != GL_NO_ERROR) {
         std::cerr << "OpenGL error: " << error << std::endl;
     }
+
+    representation->component = this;
+    ComponentTree::components.push_back(representation);
+    Log::add_entry("Triangle " + name + " created", "AtlasEngine:" + name);
 }
 } // namespace atlas

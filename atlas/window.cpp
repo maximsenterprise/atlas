@@ -20,7 +20,7 @@
 #include <thread>
 #include <vector>
 
-std::vector<atlas::ComponentRepresentation> atlas::ComponentTree::components = {};
+std::vector<atlas::ComponentRepresentation*> atlas::ComponentTree::components = {};
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -29,6 +29,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
 void atlas::Window::create_console() { start_console = true; }
 
 void atlas::Window::render_scene(Scene *scene) {
+    Log::add_entry("Begin rendering scene", "AtlasEngine:WindowComponent");
     this->repating_queue.clear();
     this->current_scene = scene;
     current_scene->setup_queue.push([this] { this->current_scene->setup(); });
@@ -39,6 +40,9 @@ void atlas::Window::render_scene(Scene *scene) {
 
 void atlas::Window::create() {
     this->should_close = false;
+    representation->component = this;
+    ComponentTree::components.push_back(representation);
+
     if (!glfwInit()) {
         ExecutionError error("Failed to initialize GLFW", true);
         error.express();
@@ -81,6 +85,7 @@ void atlas::Window::create() {
     current_scene->executeSetupQueue();
 
     glClearColor(0.2f, 0.3f, 0.3f, 0.1f); 
+    Log::add_entry("Window Created Successfully", "AtlasEngine:WindowComponent");
 
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -106,6 +111,7 @@ void atlas::Window::create() {
 }
 
 void atlas::Window::destroy() {
+    Log::add_entry("Window destroyed", "AtlasEngine:WindowComponent");
     if (window) {
         glfwDestroyWindow(window);
     }

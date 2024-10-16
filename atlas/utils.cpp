@@ -8,9 +8,12 @@
 */
 
 #include "atlas/utilities/utils.hpp"
+#include "atlas/component.hpp"
 #include "atlas/opengl/glm/ext/vector_float3.hpp"
 #include "atlas/unit.hpp"
 #include <iostream>
+#include <string>
+#include <vector>
 
 namespace atlas {
 
@@ -34,10 +37,10 @@ void FunctionQueue::clear() {
 void FunctionQueue::execute() {
     if (!general_queue.empty()) {
         general_queue.front()();
-    } 
+    }
 }
 
-std::string trim(const std::string& str) {
+std::string trim(const std::string &str) {
     size_t first = str.find_first_not_of(' ');
     if (std::string::npos == first) {
         return str;
@@ -46,18 +49,44 @@ std::string trim(const std::string& str) {
     return str.substr(first, (last - first + 1));
 }
 
-glm::vec3 Position::get() {
-    return glm::vec3(x, y, z);
+glm::vec3 Position::get() { return glm::vec3(x, y, z); }
+
+glm::vec3 Size::get() { return glm::vec3(width, height, depth); }
+
+void Position::out() {
+    std::cout << "Position: " << x << ", " << y << ", " << z << std::endl;
 }
 
-glm::vec3 Size::get() {
-    return glm::vec3(width, height, depth);
+Component::Component(std::string name, std::string type, Position position,
+                     Size size)
+    : name(name), type(type), position(position), size(size) {
+    representation = new ComponentRepresentation();
+    representation->name = name;
+    representation->type = type;
 }
 
-Component::Component(std::string name, std::string type, Position position, Size size) : name(name), type(type), position(position), size(size) {
-    ComponentRepresentation representation = ComponentRepresentation(name, type, position, size);
-    ComponentTree::components.push_back(ComponentRepresentation(name, type, position, size));
-
+std::vector<std::string> split(const std::string &str,
+                               const std::string &delimiter) {
+    std::vector<std::string> tokens;
+    size_t prev = 0, pos = 0;
+    do {
+        pos = str.find(delimiter, prev);
+        if (pos == std::string::npos)
+            pos = str.length();
+        std::string token = str.substr(prev, pos - prev);
+        if (!token.empty())
+            tokens.push_back(token);
+        prev = pos + delimiter.length();
+    } while (pos < str.length() && prev < str.length());
+    return tokens;
 }
 
+void printMatrix(const glm::mat4 &matrix) {
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            std::cout << matrix[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
 }
+} // namespace atlas

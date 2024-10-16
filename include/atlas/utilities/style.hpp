@@ -14,6 +14,7 @@
 
 static const std::string RESET = "\033[0m";
 static const std::string RED = "\033[31m";
+static const std::string GREEN = "\033[32m";
 static const std::string ITALIC = "\033[3m";
 static const std::string BOLD = "\033[1m";
 

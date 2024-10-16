@@ -13,8 +13,9 @@ using namespace atlas;
 class MyOwnScene : public Scene {
   public:
     void setup() {
-        triangle = new Triangle(this, Size(500, 500, 500), Position(0.0, 0.0, 0.0), "MyTriangle");
-        Camera* camera = new Camera("MyCamera", Position(0.0, 0.0, 0.0), Size(800, 600, 0), 0, triangle);
+        triangle = new Triangle(this, Size(700, 700, 700),
+                                Position(1, 1, 0), "MyTriangle");
+        Camera* camera = new Camera("MainCamera", Position(0.0, 0.0, 0.0), Size(10, 10, 10), 0, triangle);
         std::cout << "Scene setup" << std::endl;
     }
     void render() {}
@@ -34,7 +35,7 @@ int main() {
     Window window(800, 600, "Atlas Engine", true);
     /* MyOwnScene scene;  */
     window.create_console();
-    window.render_scene(new MyOwnScene()); 
+    window.render_scene(new MyOwnScene());
     window.create();
     return 0;
 }

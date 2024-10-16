@@ -32,6 +32,14 @@ class Camera : public Component {
     glm::mat4 view;
 };
 
+struct MVPPackage {
+    glm::mat4 model;
+    glm::mat4 view;
+    glm::mat4 projection;
+    glm::mat4 default_mvp;
+    glm::mat4 compile();
+};
+
 } // namespace atlas
 
 #endif // ATLAS_CAMERA_HPP

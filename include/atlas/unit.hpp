@@ -15,11 +15,19 @@
 
 namespace atlas {
 
+class Timestamp {
+public:
+    int year, month, day, hour, minute, second;
+    Timestamp(int year, int month, int day, int hour, int minute, int second) : year(year), month(month), day(day), hour(hour), minute(minute), second(second) {};
+    void out();
+};
+
 class Position {
 public:
     float x, y, z;
     Position(float x, float y, float z) : x(x), y(y), z(z) {};
     glm::vec3 get();
+    void out();
 };
 
 class Size {

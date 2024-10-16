@@ -14,12 +14,15 @@
 #include <string>
 namespace atlas {
 
+class ComponentRepresentation;
+
 class Component {
 protected:
     std::string name;
     std::string type;
     Position position;
     Size size;
+    ComponentRepresentation* representation = nullptr;
 
     Component(std::string name, std::string type, Position position, Size size);
     virtual ~Component() = default;
@@ -29,9 +32,7 @@ class ComponentRepresentation {
 public:
     std::string name;
     std::string type;
-    Position position;
-    Size size;
-    ComponentRepresentation(std::string name, std::string type, Position position, Size size) : name(name), type(type), position(position), size(size) {}
+    Component* component;
 };
 
 }
