@@ -26,6 +26,10 @@
 namespace atlas {
 
 void Triangle::render() {
+    if (color_global.a != 1.0f) {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
     // Render the triangle
     glUseProgram(program);
     if (model != glm::mat4(1.0f)) {
@@ -40,6 +44,7 @@ void Triangle::render() {
     glDrawArrays(GL_TRIANGLES, 0, 3);
     glBindVertexArray(0);
     glUseProgram(0);
+    glDisable(GL_BLEND); 
 }
 
 void Triangle::set_model(MVPPackage package) {
@@ -96,7 +101,7 @@ void Triangle::init_triangle(Size size, Position position, Scene *scene) {
 
 Triangle::Triangle(Scene *scene, Size size, Position position, Color color,
                    std::string name)
-    : Component(name, "TriangleComponent", position, size) {
+    : Component(name, "TriangleComponent", position, size) { 
     init_triangle(size, position, scene);
     this->color_global = color.get();
 }
@@ -424,6 +429,10 @@ void Cube::color_face(Color color, CubeFace cube_face) {
 }
 
 void Cube::render() {
+    if (!texture_global && color_withglobal && color_global.a != 1.0f) {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
     // Render the cube
     glUseProgram(program);
     if (model != glm::mat4(1.0f)) {
@@ -445,6 +454,7 @@ void Cube::render() {
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
     glUseProgram(0);
+    glDisable(GL_BLEND);
 }
 
 void Cube::set_model(MVPPackage package) {

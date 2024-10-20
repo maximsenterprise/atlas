@@ -89,13 +89,12 @@ void atlas::Window::create() {
 
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glDisable(GL_BLEND);
+        this->function_queue.execute_all();
+        this->repating_queue.execute(); 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
-
-        this->function_queue.execute_all();
-        this->repating_queue.execute();
+        this->transparent_queue.execute(); 
 
         if (should_close) {
             glfwSetWindowShouldClose(window, GLFW_TRUE);

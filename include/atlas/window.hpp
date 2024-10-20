@@ -31,6 +31,7 @@ public:
     std::atomic<bool> should_close;
     FunctionQueue function_queue = FunctionQueue();
     FunctionQueue repating_queue = FunctionQueue();
+    FunctionQueue transparent_queue = FunctionQueue();
 
     Window(int width, int height, std::string title, bool resizable = false) : title(title), width(width), height(height), resizable(resizable), Component("Window", "WindowComponent", Position(0, 0, 0), Size(width, height, 0)) {};
     

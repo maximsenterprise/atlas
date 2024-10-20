@@ -18,6 +18,8 @@ namespace atlas
 class Texture {
 public:
     static Texture fromBMP(const char * path);
+    static Texture fromPNG(const char * path);
+    static Texture fromDDS(const char * path);
     GLuint representation;
 };
 

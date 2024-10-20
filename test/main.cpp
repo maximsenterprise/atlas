@@ -17,19 +17,21 @@ class MyOwnScene : public Scene {
         Color color = AtlasPalette::green;
         cube = new Cube(this, Size(700, 700, 700),
                                 Position(1, 1, 0), "MyTriangle"); 
-        Texture texture = Texture::fromBMP("./test/textures/sample3.bmp");
+        Texture texture = Texture::fromBMP("./test/textures/cube_texture.bmp");
         cube->set_texture(texture);
         /* cube->color(AtlasPalette::green); */
         Camera* camera = new Camera("MainCamera", Position(0.0, 0.0, 0.0), Size(10, 10, 10), 0, cube);
         std::cout << "Scene setup" << std::endl;
     }
-    void render() {}
+    void render() {
+    }
     void update() {
         if (cube == nullptr) {
             ExecutionError error = ExecutionError("Triangle is null");
             error.express();
         }
-        cube->render();
+                cube->render();
+
     }
 
   private:
