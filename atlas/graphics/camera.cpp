@@ -66,6 +66,14 @@ Camera::Camera(std::string name, Position position, Size size, int rotation, Com
         package.projection = projection; 
         package.default_mvp = mvp;
         triangle->set_model(package);
+    } else if (Cube* cube = dynamic_cast<Cube*> (reference)) {
+        mvp = glm::translate(mvp, cube->get_position().get());
+        MVPPackage package = MVPPackage();
+        package.model = model;
+        package.view = view;
+        package.projection = projection; 
+        package.default_mvp = mvp;
+        cube->set_model(package);
     } else {
         ExecutionError error = ExecutionError("Invalid reference type for camera");
         error.express(); 

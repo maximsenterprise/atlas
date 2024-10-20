@@ -13,22 +13,24 @@ using namespace atlas;
 class MyOwnScene : public Scene {
   public:
     void setup() {
-        triangle = new Triangle(this, Size(700, 700, 700),
-                                Position(1, 1, 0), "MyTriangle");
-        Camera* camera = new Camera("MainCamera", Position(0.0, 0.0, 0.0), Size(10, 10, 10), 0, triangle);
+        Color color = AtlasPalette::green;
+        cube = new Cube(this, Size(700, 700, 700),
+                                Position(1, 1, 0), color.with_alpha(50), "MyTriangle");
+        cube->color_face(color.with_alpha(50), CubeFace::TOP);
+        Camera* camera = new Camera("MainCamera", Position(0.0, 0.0, 0.0), Size(10, 10, 10), 0, cube);
         std::cout << "Scene setup" << std::endl;
     }
     void render() {}
     void update() {
-        if (triangle == nullptr) {
+        if (cube == nullptr) {
             ExecutionError error = ExecutionError("Triangle is null");
             error.express();
         }
-        triangle->render();
+        cube->render();
     }
 
   private:
-    atlas::Triangle *triangle = nullptr;
+    atlas::Cube *cube = nullptr;
 };
 
 int main() {

@@ -9,7 +9,9 @@
 
 #include "atlas/utilities/utils.hpp"
 #include "atlas/component.hpp"
+#include "atlas/opengl/glm/ext/matrix_float3x3.hpp"
 #include "atlas/opengl/glm/ext/vector_float3.hpp"
+#include "atlas/opengl/glm/ext/vector_float4.hpp"
 #include "atlas/unit.hpp"
 #include <iostream>
 #include <string>
@@ -89,4 +91,27 @@ void printMatrix(const glm::mat4 &matrix) {
         std::cout << std::endl;
     }
 }
+
+glm::vec4 Color::get() {
+    return glm::vec4(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f); 
+}
+
+Color Color::with_alpha(int alpha) {
+    return Color(r, g, b, alpha);
+}
+
+const Color AtlasPalette::white = Color(255, 255, 255, 255);
+const Color AtlasPalette::black = Color(0, 0, 0, 255);
+const Color AtlasPalette::red = Color(255, 0, 0, 255);
+const Color AtlasPalette::green = Color(0, 255, 0, 255);
+const Color AtlasPalette::blue = Color(0, 0, 255, 255);
+const Color AtlasPalette::yellow = Color(255, 255, 0, 255);
+const Color AtlasPalette::cyan = Color(0, 255, 255, 255);
+const Color AtlasPalette::magenta = Color(255, 0, 255, 255);
+const Color AtlasPalette::orange = Color(255, 165, 0, 255);
+const Color AtlasPalette::purple = Color(128, 0, 128, 255);
+const Color AtlasPalette::pink = Color(255, 192, 203, 255);
+const Color AtlasPalette::brown = Color(165, 42, 42, 255);
+const Color AtlasPalette::grey = Color(128, 128, 128, 255);
+
 } // namespace atlas
