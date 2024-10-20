@@ -3,6 +3,7 @@
 #include "atlas/core/exec_error.hpp"
 #include "atlas/scene.hpp"
 #include "atlas/shape.hpp"
+#include "atlas/texture.hpp"
 #include "atlas/unit.hpp"
 #include "atlas/window.hpp"
 #include <iostream>
@@ -15,8 +16,10 @@ class MyOwnScene : public Scene {
     void setup() {
         Color color = AtlasPalette::green;
         cube = new Cube(this, Size(700, 700, 700),
-                                Position(1, 1, 0), color.with_alpha(50), "MyTriangle");
-        cube->color_face(color.with_alpha(50), CubeFace::TOP);
+                                Position(1, 1, 0), "MyTriangle"); 
+        Texture texture = Texture::fromBMP("./test/textures/sample3.bmp");
+        cube->set_texture(texture);
+        /* cube->color(AtlasPalette::green); */
         Camera* camera = new Camera("MainCamera", Position(0.0, 0.0, 0.0), Size(10, 10, 10), 0, cube);
         std::cout << "Scene setup" << std::endl;
     }

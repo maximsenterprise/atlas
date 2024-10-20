@@ -10,11 +10,13 @@
 #include "atlas/shape.hpp"
 #include "atlas/component.hpp"
 #include "atlas/core/console.hpp"
+#include "atlas/core/exec_error.hpp"
 #include "atlas/core/shader.hpp"
 #include "atlas/opengl/glew.h"
 #include "atlas/opengl/glm/gtc/matrix_transform.hpp"
 #include "atlas/opengl/glm/gtc/type_ptr.hpp"
 #include "atlas/scene.hpp"
+#include "atlas/texture.hpp"
 #include "atlas/unit.hpp"
 #include "atlas/utilities/utils.hpp"
 #include <algorithm>
@@ -30,7 +32,7 @@ void Triangle::render() {
         // Set position
         glUniformMatrix4fv(glGetUniformLocation(program, "MVP"), 1, GL_FALSE,
                            &model[0][0]);
-    }
+    } 
     // Set color
     glUniform4fv(glGetUniformLocation(program, "color_in"), 1,
                  glm::value_ptr(color_global));
@@ -192,6 +194,7 @@ void Cube::init_cube(Size size, Position position, Scene *scene) {
         size.width, -size.height, size.depth  // Bottom-right
     };
     std::copy(std::begin(temp_color_buffer_data), std::end(temp_color_buffer_data), gl_color_buffer_data);
+    std::copy(std::begin(uv_buffer_data), std::end(uv_buffer_data), gl_uv_buffer_data);
 
     // Building the VAO and the VBO
     if (VAO == 0) {
@@ -214,6 +217,33 @@ void Cube::init_cube(Size size, Position position, Scene *scene) {
     representation->component = this;
     ComponentTree::components.push_back(representation);
     Log::add_entry("Cube " + name + " created", "AtlasEngine:" + name);
+}
+
+void Cube::color(Color color) {
+    this->color_global = color.get();
+    color_withglobal = true;
+}
+
+void Cube::set_texture(Texture texture) {
+    if (texture.representation != 0) {
+        this->texture_global = true;
+       program = compileVertexShader("shaders/cube/cube_text.vert");
+        GLuint fragmentShader = compileFragmentShader("shaders/cube/cube_text.frag");
+        program = linkShaderProgram(program, fragmentShader); 
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture.representation);
+        glGenBuffers(1, &uvBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(gl_uv_buffer_data),
+                     gl_uv_buffer_data, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(1);
+        glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void *)0);
+        color_withglobal = false;
+    } else {
+        ExecutionError error = ExecutionError("Texture is null"); 
+        error.express();
+    }
 }
 
 const GLfloat Cube::temp_color_buffer_data[144] = {
@@ -265,6 +295,44 @@ const GLfloat Cube::temp_color_buffer_data[144] = {
         0.771f, 0.328f, 0.970f, 1.0f, 0.771f, 0.328f, 0.970f, 1.0f, 0.771f,
         0.328f, 0.970f, 1.0f};
 
+const GLfloat Cube::uv_buffer_data[72] = {
+    0.000059f, 1.0f-0.000004f,
+    0.000103f, 1.0f-0.336048f,
+    0.335973f, 1.0f-0.335903f,
+    1.000023f, 1.0f-0.000013f,
+    0.667979f, 1.0f-0.335851f,
+    0.999958f, 1.0f-0.336064f,
+    0.667979f, 1.0f-0.335851f,
+    0.336024f, 1.0f-0.671877f,
+    0.667969f, 1.0f-0.671889f,
+    1.000023f, 1.0f-0.000013f,
+    0.668104f, 1.0f-0.000013f,
+    0.667979f, 1.0f-0.335851f,
+    0.000059f, 1.0f-0.000004f,
+    0.335973f, 1.0f-0.335903f,
+    0.336098f, 1.0f-0.000071f,
+    0.667979f, 1.0f-0.335851f,
+    0.335973f, 1.0f-0.335903f,
+    0.336024f, 1.0f-0.671877f,
+    1.000004f, 1.0f-0.671847f,
+    0.999958f, 1.0f-0.336064f,
+    0.667979f, 1.0f-0.335851f,
+    0.668104f, 1.0f-0.000013f,
+    0.335973f, 1.0f-0.335903f,
+    0.667979f, 1.0f-0.335851f,
+    0.335973f, 1.0f-0.335903f,
+    0.668104f, 1.0f-0.000013f,
+    0.336098f, 1.0f-0.000071f,
+    0.000103f, 1.0f-0.336048f,
+    0.000004f, 1.0f-0.671870f,
+    0.336024f, 1.0f-0.671877f,
+    0.000103f, 1.0f-0.336048f,
+    0.336024f, 1.0f-0.671877f,
+    0.335973f, 1.0f-0.335903f,
+    0.667969f, 1.0f-0.671889f,
+    1.000004f, 1.0f-0.671847f,
+    0.667979f, 1.0f-0.335851f
+};
 
 void Cube::color_face(Color color, CubeFace cube_face) {
     bool setup_process = false;
@@ -367,9 +435,11 @@ void Cube::render() {
         // Set color
         glUniform4fv(glGetUniformLocation(program, "color_in"), 1,
                      glm::value_ptr(color_global));
-    } else {
+    } else if (!color_withglobal && !texture_global) {
         glBindBuffer(GL_ARRAY_BUFFER, colorBuffer); 
         glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void *)0);
+    } else if (texture_global) {
+        
     }
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);

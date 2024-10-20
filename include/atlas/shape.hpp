@@ -15,6 +15,7 @@
 #include "atlas/opengl/glm/ext/matrix_float3x3.hpp"
 #include "atlas/opengl/glm/ext/vector_float4.hpp"
 #include "atlas/scene.hpp"
+#include "atlas/texture.hpp"
 #include "atlas/unit.hpp"
 #include "atlas/utilities/utils.hpp"
 #include "atlas/component.hpp"
@@ -71,6 +72,7 @@ public:
     // Color each face of the cube separately
     void color(Color color);
     void color_face(Color color, CubeFace cube_face); 
+    void set_texture(Texture texture);
 
 private:
     GLuint VBO = 0;
@@ -78,13 +80,17 @@ private:
     glm::mat4 model = glm::mat4(1.0f);
     MVPPackage mvp;
     void init_cube(Size size, Position position, Scene* scene);
-    bool color_withglobal;
+    bool color_withglobal; 
+    bool texture_global;
     GLuint colorBuffer;
+    GLuint uvBuffer;
 
     glm::vec4 color_global;
-    static const GLfloat temp_color_buffer_data[144]; 
+    static const GLfloat temp_color_buffer_data[144];
+    static const GLfloat uv_buffer_data[72];
    
     GLfloat gl_color_buffer_data[144];
+    GLfloat gl_uv_buffer_data[72];
     float vertices[]; 
 };
 
