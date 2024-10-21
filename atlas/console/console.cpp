@@ -10,6 +10,7 @@
 #include "atlas/core/console.hpp"
 #include "atlas/component.hpp"
 #include "atlas/core/exec_error.hpp"
+#include "atlas/mouse.hpp"
 #include "atlas/shape.hpp"
 #include "atlas/utilities/style.hpp"
 #include "atlas/utilities/utils.hpp"
@@ -103,6 +104,10 @@ void atlas::console(Window *window) {
                     "Invalid component type. Cannot be edited");
                 error.express();
             }
+        } else if (command == "show_cursor") {
+             window->function_queue.push([] { Mouse::show_cursor(); });
+        } else if (command == "hide_cursor") {
+                window->function_queue.push([] { Mouse::hide_cursor(); });
         } else if (command == "") {
             continue;
         } else {

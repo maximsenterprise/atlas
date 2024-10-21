@@ -2,6 +2,7 @@
 #include "atlas/camera.hpp"
 #include "atlas/core/exec_error.hpp"
 #include "atlas/event.hpp"
+#include "atlas/mouse.hpp"
 #include "atlas/scene.hpp"
 #include "atlas/shape.hpp"
 #include "atlas/texture.hpp"
@@ -26,9 +27,12 @@ class MyOwnScene : public Scene {
         std::cout << "Scene setup" << std::endl;
         int count = 0; 
 
-        Event event;
-        event.add([] { std::cout << "Event triggered " << std::endl; });
-        PredicateEvent predicateEvent([&count] { count++; return count < 10; }, event); 
+        Mouse::lock_cursor();
+        Mouse::hide_cursor();
+        Mouse::onLeftButtonClicked([]() {
+            Mouse::free_cursor();
+            Mouse::show_cursor();
+        });
     }
     void render() {
     }

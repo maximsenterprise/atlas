@@ -27,6 +27,7 @@ class Position {
 public:
     float x, y, z;
     Position(float x, float y, float z) : x(x), y(y), z(z) {};
+    Position(float x, float y) : x(x), y(y), z(0) {};
     glm::vec3 get();
     void out();
 };
@@ -35,6 +36,7 @@ class Size {
 public:
     float width, height, depth;
     Size(float width, float height, float depth) : width(width / 1000), height(height / 1000), depth(depth / 1000) {};
+    Size(float width, float height) : width(width / 1000), height(height / 1000), depth(0) {};
     glm::vec3 get();
 };
 

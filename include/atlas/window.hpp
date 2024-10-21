@@ -39,8 +39,9 @@ public:
     void destroy();
     void create_console();
     void render_scene(Scene* scene);
-private:
+    static Window* current;
     GLFWwindow* window;
+private:
     std::thread* console_thread;
     bool start_console = false;
     Scene* current_scene = nullptr;

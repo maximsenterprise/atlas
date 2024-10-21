@@ -11,6 +11,7 @@
 #include "atlas/component.hpp"
 #include "atlas/core/console.hpp"
 #include "atlas/core/exec_error.hpp"
+#include "atlas/mouse.hpp"
 #include "atlas/opengl/glew.h"
 #include "atlas/opengl/glfw3.h"
 #include "atlas/scene.hpp"
@@ -21,6 +22,8 @@
 #include <vector>
 
 std::vector<atlas::ComponentRepresentation*> atlas::ComponentTree::components = {};
+
+atlas::Window* atlas::Window::current = nullptr;
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -39,6 +42,7 @@ void atlas::Window::render_scene(Scene *scene) {
 }
 
 void atlas::Window::create() {
+    atlas::Window::current = this; 
     this->should_close = false;
     representation->component = this;
     ComponentTree::components.push_back(representation);
@@ -74,6 +78,9 @@ void atlas::Window::create() {
     glfwMakeContextCurrent(window);
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, Mouse::cursor_move_fallback);
+    glfwSetMouseButtonCallback(window, Mouse::cursor_button_fallback);
+    glfwSetScrollCallback(window, Mouse::cursor_scroll_fallback); 
 
     GLenum err = glewInit();
     if (GLEW_OK != err) {
@@ -90,6 +97,9 @@ void atlas::Window::create() {
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_BLEND);
+    
+        Mouse::compute();
+
         this->function_queue.execute_all();
         this->repating_queue.execute(); 
         glEnable(GL_BLEND);
