@@ -1,11 +1,13 @@
 
 #include "atlas/camera.hpp"
 #include "atlas/core/exec_error.hpp"
+#include "atlas/event.hpp"
 #include "atlas/scene.hpp"
 #include "atlas/shape.hpp"
 #include "atlas/texture.hpp"
 #include "atlas/unit.hpp"
 #include "atlas/window.hpp"
+#include <concepts>
 #include <iostream>
 #include <string>
 
@@ -22,6 +24,11 @@ class MyOwnScene : public Scene {
         /* cube->color(AtlasPalette::green); */
         Camera* camera = new Camera("MainCamera", Position(0.0, 0.0, 0.0), Size(10, 10, 10), 0, cube);
         std::cout << "Scene setup" << std::endl;
+        int count = 0; 
+
+        Event event;
+        event.add([] { std::cout << "Event triggered " << std::endl; });
+        PredicateEvent predicateEvent([&count] { count++; return count < 10; }, event); 
     }
     void render() {
     }
