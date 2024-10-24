@@ -28,6 +28,7 @@ public:
     float x, y, z;
     Position(float x, float y, float z) : x(x), y(y), z(z) {};
     Position(float x, float y) : x(x), y(y), z(0) {};
+    Position(glm::vec3 vec) : x(vec.x), y(vec.y), z(vec.z) {};
     glm::vec3 get();
     void out();
 };

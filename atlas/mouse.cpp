@@ -17,6 +17,7 @@ namespace atlas
 {
 
 bool Mouse::is_cursor_locked = false;
+Position Mouse::cursor_position_global = Position(0, 0, 0);
 
 void Mouse::compute()
 {
@@ -56,6 +57,7 @@ void Mouse::onMove(std::function<void()> callback) {
 }
 
 void Mouse::cursor_move_fallback(GLFWwindow * window, double x, double y) {
+    cursor_position_global = Position(x, y, 0);
     move_event.trigger();
 }
 

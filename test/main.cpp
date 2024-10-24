@@ -1,6 +1,7 @@
 
 #include "atlas/camera.hpp"
 #include "atlas/core/exec_error.hpp"
+#include "atlas/elements.hpp"
 #include "atlas/event.hpp"
 #include "atlas/mouse.hpp"
 #include "atlas/scene.hpp"
@@ -20,19 +21,17 @@ class MyOwnScene : public Scene {
         Color color = AtlasPalette::green;
         cube = new Cube(this, Size(700, 700, 700),
                                 Position(1, 1, 0), "MyTriangle"); 
-        Texture texture = Texture::fromBMP("./test/textures/cube_texture.bmp");
+        Texture texture = Texture::fromBMP("./test/textures/sample.bmp");
         cube->set_texture(texture);
         /* cube->color(AtlasPalette::green); */
-        Camera* camera = new Camera("MainCamera", Position(0.0, 0.0, 0.0), Size(10, 10, 10), 0, cube);
+        Camera* camera = new Camera("MainCamera", Position(1, 1, 5), 45, Size(10, 10, 10), 0, cube);
         std::cout << "Scene setup" << std::endl;
         int count = 0; 
 
-        Mouse::lock_cursor();
-        Mouse::hide_cursor();
-        Mouse::onLeftButtonClicked([]() {
-            Mouse::free_cursor();
-            Mouse::show_cursor();
-        });
+        Mouse::lock_cursor(); 
+        
+        FirstPersonCamera* first_person_camera = new FirstPersonCamera();
+        first_person_camera->apply_to(camera);
     }
     void render() {
     }

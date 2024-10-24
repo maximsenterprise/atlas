@@ -41,6 +41,10 @@ void atlas::Window::render_scene(Scene *scene) {
     this->repating_queue.push([this] { this->current_scene->update(); });
 }
 
+atlas::FunctionQueue atlas::Window::public_function_repeating_queue = FunctionQueue();
+float atlas::Window::delta_time = 0.0f;
+float atlas::Window::last_frame = 0.0f;
+
 void atlas::Window::create() {
     atlas::Window::current = this; 
     this->should_close = false;
@@ -95,23 +99,29 @@ void atlas::Window::create() {
     Log::add_entry("Window Created Successfully", "AtlasEngine:WindowComponent");
 
     while (!glfwWindowShouldClose(window)) {
+        float current_frame = glfwGetTime();
+        delta_time = current_frame - last_frame;
+        last_frame = current_frame;
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_BLEND);
+        glEnable(GL_CULL_FACE);
     
-        Mouse::compute();
-
         this->function_queue.execute_all();
         this->repating_queue.execute(); 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        this->transparent_queue.execute(); 
+        this->transparent_queue.execute();  
+
+        atlas::Window::public_function_repeating_queue.execute(); 
+
+        Mouse::compute();
 
         if (should_close) {
             glfwSetWindowShouldClose(window, GLFW_TRUE);
             destroy();
         }
         glfwSwapBuffers(window);
-
         glfwPollEvents();
 
         if (start_console) {

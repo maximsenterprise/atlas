@@ -42,6 +42,8 @@ public:
     static Event middle_button_event;
     static Event scroll_event;
 
+    static Position cursor_position_global;
+
     using ScrollOffset = Position; 
     static ScrollOffset get_scroll_offset();
     static ScrollOffset scroll_offset;

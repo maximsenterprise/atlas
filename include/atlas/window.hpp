@@ -32,6 +32,9 @@ public:
     FunctionQueue function_queue = FunctionQueue();
     FunctionQueue repating_queue = FunctionQueue();
     FunctionQueue transparent_queue = FunctionQueue();
+    static FunctionQueue public_function_repeating_queue;
+    static float delta_time;
+    static float last_frame;
 
     Window(int width, int height, std::string title, bool resizable = false) : title(title), width(width), height(height), resizable(resizable), Component("Window", "WindowComponent", Position(0, 0, 0), Size(width, height, 0)) {};
     

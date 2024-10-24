@@ -11,6 +11,7 @@
 #include "atlas/component.hpp"
 #include "atlas/core/console.hpp"
 #include "atlas/core/exec_error.hpp"
+#include "atlas/opengl/glm/ext/matrix_transform.hpp"
 #include "atlas/shape.hpp"
 #include "atlas/unit.hpp"
 #include "atlas/opengl/glm/gtc/matrix_transform.hpp"
@@ -21,12 +22,12 @@
 
 namespace atlas {
 
-Camera::Camera(std::string name, Position position, Size size, int rotation) : Component(name, "CameraComponent", position, size), position(position), rotation(rotation), size(size) { 
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float) size.width / (float) size.height, 0.1f, 100.0f);
+Camera::Camera(std::string name, Position position, float fov, Size size, int rotation) : Component(name, "CameraComponent", position, size), position(position), rotation(rotation), fov(fov), size(size) { 
+    glm::mat4 projection = glm::perspective(glm::radians(fov), (float) size.width / (float) size.height, 0.1f, 100.0f);
 
     glm::mat4 view = glm::lookAt(
         glm::vec3(position.x, position.y, position.z),
-        glm::vec3(position.x, position.y, position.z - 1),
+        glm::vec3(0, 0, 0),
         glm::vec3(0, 1, 0)
     );
 
@@ -43,14 +44,14 @@ Camera::Camera(std::string name, Position position, Size size, int rotation) : C
     ComponentTree::components.push_back(representation);
 }
 
-Camera::Camera(std::string name, Position position, Size size, int rotation, Component* reference) : Component(name, "CameraComponent", position, size), position(position), rotation(rotation), size(size), reference(reference) {
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float) size.width / (float) size.height, 0.1f, 100.0f);
+Camera::Camera(std::string name, Position position, float fov, Size size, int rotation, Component* reference) : Component(name, "CameraComponent", position, size), position(position), rotation(rotation), fov(fov), reference(reference), size(size) {
+    glm::mat4 projection = glm::perspective(glm::radians(fov), (float) size.width / (float) size.height, 0.1f, 100.0f);
 
     glm::mat4 view = glm::lookAt(
-        glm::vec3(4,3,3), 
-        glm::vec3(0, 0, 0), 
+        position.get(),
+        glm::vec3(0, 0, 0),
         glm::vec3(0, 1, 0)
-    );
+    ); 
 
     this->projection = projection;
     this->view = view;
@@ -60,7 +61,8 @@ Camera::Camera(std::string name, Position position, Size size, int rotation, Com
     
     if (Triangle* triangle = dynamic_cast<Triangle*> (reference)) {
         mvp = glm::translate(mvp, triangle->get_position().get());
-        MVPPackage package = MVPPackage();
+        printMatrix(mvp);
+        package = MVPPackage();
         package.model = model;
         package.view = view;
         package.projection = projection; 
@@ -68,7 +70,7 @@ Camera::Camera(std::string name, Position position, Size size, int rotation, Com
         triangle->set_model(package);
     } else if (Cube* cube = dynamic_cast<Cube*> (reference)) {
         mvp = glm::translate(mvp, cube->get_position().get());
-        MVPPackage package = MVPPackage();
+        package = MVPPackage();
         package.model = model;
         package.view = view;
         package.projection = projection; 
@@ -80,6 +82,7 @@ Camera::Camera(std::string name, Position position, Size size, int rotation, Com
     }
 
     representation->component = this;
+    this->reference = reference;
     ComponentTree::components.push_back(representation);
     Log::add_entry("Camera " + name + " created successfully", "AtlasEngine:" + name);
 }

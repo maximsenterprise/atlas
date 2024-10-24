@@ -17,27 +17,29 @@
 
 namespace atlas {
 
-class Camera : public Component {
-  public:
-    void look_at(Component* component);
-    void set_position(Position position);
-    Position position;
-    Size size;
-    int rotation;
-    Component* reference = nullptr;
-    Camera(std::string name, Position position, Size size, int rotation);
-    Camera(std::string name, Position position, Size size, int rotation, Component* reference);
-  private:
-    glm::mat4 projection;
-    glm::mat4 view;
-};
-
 struct MVPPackage {
     glm::mat4 model;
     glm::mat4 view;
     glm::mat4 projection;
     glm::mat4 default_mvp;
     glm::mat4 compile();
+};
+
+class Camera : public Component {
+  public:
+    void look_at(Component* component);
+    void set_position(Position position);
+    Position position;
+    int rotation;
+    float fov;
+    Component* reference = nullptr;
+    Camera(std::string name, Position position, float fov, Size size, int rotation);
+    Camera(std::string name, Position position, float fov, Size size, int rotation, Component* reference);
+    MVPPackage package;
+    Size size;
+  private:
+    glm::mat4 projection; 
+    glm::mat4 view;
 };
 
 } // namespace atlas
