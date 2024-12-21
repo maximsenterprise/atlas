@@ -20,7 +20,15 @@
 #endif
 
 FunctionQueue<void> Application::renderFunctions = FunctionQueue<void>();
+FunctionQueue<void> Application::postProcessFunctions = FunctionQueue<void>();
 RenderInstance Application::instance = RenderInstance();
+int Application::width = 0;
+int Application::height = 0;
+
+Application::Application(int width, int height, std::string title) : title(title) {
+    Application::width = width;
+    Application::height = height;
+}
 
 AtlasBackend Application::getBackend() const {
     return m_backend;
@@ -28,18 +36,18 @@ AtlasBackend Application::getBackend() const {
 
 void Application::setBackend(AtlasBackend backend) {
     this->m_backend = backend;
+    switch (backend) {
+    case AtlasBackend::OpenGL:
+        initOpenGL();
+        break;
+    default:
+        std::cout << "Cannot set backend to None or unknown value" << std::endl;
+    }
 }
 
 
 void Application::run() {
-    switch (m_backend) {
-    case AtlasBackend::OpenGL:
-        initOpenGL();
-        break;
-    case AtlasBackend::None:
-        std::cerr << "You must specify a backend when creating the application" << std::endl;
-        break;
-    }
+    mainLoop();
 }
 
 void Application::initOpenGL() {
@@ -93,6 +101,10 @@ void Application::initOpenGL() {
 
     SDL_GL_SetSwapInterval(1);
 
+    instance.createFramebuffer(width, height);
+}
+
+void Application::mainLoop() {
     bool running = true;
     SDL_Event event;
 
@@ -103,17 +115,21 @@ void Application::initOpenGL() {
             }
         }
 
-        glClearColor(0.2, 0.3, 0.3, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         renderFunctions.run();
 
         SDL_GL_SwapWindow(window);
     }
 
-    SDL_GL_DeleteContext(context);
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
+
+void Application::applyPostProcess(PostProcessUnit unit) {
+    instance.postProcessUnit = unit;
+    if (unit.isLocal && unit.type == AtlasPostProcessing::Blur) {
+        instance.createPongBuffers(width, height);
+    }
+}
+
 
 

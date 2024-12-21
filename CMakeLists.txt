@@ -27,6 +27,9 @@ add_library(atlas STATIC
         include/atlas/data.hpp
         atlas/core/core_rendering.cpp
         atlas/core/data.cpp
+        atlas/graphics/shape.cpp
+        include/atlas/shape.h
+        include/atlas/units.h
 )
 
 add_executable(atlas_test
@@ -35,6 +38,8 @@ add_executable(atlas_test
         include/atlas/core/core_rendering.h
         include/atlas/graphics.h
         include/atlas/data.hpp
+        include/atlas/shape.h
+        include/atlas/units.h
 )
 
 target_include_directories(atlas PUBLIC ${SDL2_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS})

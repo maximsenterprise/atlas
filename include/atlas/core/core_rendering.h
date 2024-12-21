@@ -35,18 +35,33 @@ class RenderInstance {
 public:
     GLuint getProgramFromLocal(const char* vertexShader, const char* fragmentShader);
     GLuint getProgramFromShader(AtlasShader shader);
+    void createFramebuffer(int width, int height);
 
     static glm::mat4 model;
     static glm::mat4 view;
     static glm::mat4 projection;
 
     void renderToScreen(std::vector<CoreVertex> vertices, GLuint program, int count, GLenum mode);
+    void renderToFramebuffer(std::vector<CoreVertex> vertices, GLuint program, int count, GLenum mode);
+    void createPongBuffers(int width, int height);
 
-    RenderInstance() : packages({}) {
+    RenderInstance() : packages({}), postProcessUnit(PostProcessUnit(AtlasPostProcessing::None)) {
     }
+
+    PostProcessUnit postProcessUnit;
 
 private:
     std::vector<CoreRenderingPackage> packages;
+    GLuint framebuffers[2];
+    GLuint textures[2];
+    GLuint depthBuffer;
+
+    GLuint quadVBO = 0;
+    GLuint quadVAO = 0;
+
+    void applyAnyFramebufferEffect(GLuint texture);
+
+    void applyBlurEffect(GLuint texture);
 };
 
 #endif //ATLAS_CORE_RENDERING_H

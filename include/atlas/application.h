@@ -25,14 +25,16 @@ class Application {
 public:
     void run();
     void setBackend(AtlasBackend backend);
+    void mainLoop();
+    void applyPostProcess(PostProcessUnit unit);
     AtlasBackend getBackend() const;
-    int width, height;
+    static int width, height;
     std::string title;
 
-    Application(int width, int height, std::string title) : width(width), height(height), title(title) {
-    }
+    Application(int width, int height, std::string title);
 
     static FunctionQueue<void> renderFunctions;
+    static FunctionQueue<void> postProcessFunctions;
     static RenderInstance instance;
 
 private:
